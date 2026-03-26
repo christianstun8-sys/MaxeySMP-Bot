@@ -39,7 +39,6 @@ class MaxeySMPBot(commands.Bot):
         super().__init__(command_prefix=prefix, help_command=None, intents=intents)
         os.makedirs("cogs", exist_ok=True)
         os.makedirs("databases", exist_ok=True)
-        os.makedirs("data", exist_ok=True)
         self.configdb = None
         self.ticketdb = None
         self.roleconfig = None
