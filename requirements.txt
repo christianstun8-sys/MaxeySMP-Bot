@@ -3,3 +3,4 @@ discord.py
 dotenv
 jishaku
 aiosqlite
+simpleeval

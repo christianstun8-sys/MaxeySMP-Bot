@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import aiosqlite
-from setup_config_db import get_channel_config
+from setup_config_db import get_channel_config, get_counting_config
+from simpleeval import simple_eval
 
 async def init_db(db: aiosqlite.Connection):
     await db.execute(
@@ -64,39 +65,41 @@ class CountingGame(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        if message.author.bot:
-            return
-        if message.guild.id is None:
+        if message.author.bot or message.guild is None:
             return
 
         config = await get_channel_config(self.config_db, message.guild.id)
         counting_channel_id = config[8]
 
         if message.channel.id == counting_channel_id:
+            counting_config = await get_counting_config(self.config_db, message.guild.id)
+            calculation = counting_config[1]
+
             self.db = self.bot.counting_db
-
             data = await get_counting_data(db=self.db, server_id=message.guild.id)
-            if data:
-                current_count, last_member_id = data[0], data[1]
+            current_count, last_member_id = (data[0], data[1]) if data else (0, None)
+
+            content = message.content.strip()
+            new_count = None
+
+            if calculation == 1:
+                try:
+                    result = simple_eval(content)
+                    if isinstance(result, (int, float)):
+                        new_count = int(result)
+                except Exception:
+                    return
             else:
-                current_count, last_member_id = 0, None
-
-            if not message.content.strip().isdigit():
-                return
-
-            if not message.content.strip().isdigit():
-                return
-
-            new_count = int(message.content.strip())
+                if content.isdigit():
+                    new_count = int(content)
+                else:
+                    return
 
             reason = None
             if last_member_id == message.author.id:
-                reason = "Du kannst nicht zweimal hintereinander Zählen."
-
+                reason = "Du kannst nicht zweimal hintereinander zählen."
             elif new_count != current_count + 1:
                 reason = "Falsche Zahl."
-
-            stat_data = await get_stat_data(db=self.db, server_id=message.guild.id, member_id=message.author.id)
 
             if reason is not None:
                 embed = discord.Embed(
@@ -107,14 +110,10 @@ class CountingGame(commands.Cog):
                 await message.reply(embed=embed, content=message.author.mention)
                 await continue_count(self.db, message.guild.id, 0, None)
                 await save_stats(self.db, message.author.id, message.guild.id, False)
-                return
-
-
             else:
                 await message.add_reaction("✅")
                 db_count = current_count + 1
-                user_id = message.author.id
-                await continue_count(self.db, message.guild.id, db_count, user_id)
+                await continue_count(self.db, message.guild.id, db_count, message.author.id)
                 await save_stats(self.db, message.author.id, message.guild.id, True, db_count)
 
 class StatCommand(commands.Cog):

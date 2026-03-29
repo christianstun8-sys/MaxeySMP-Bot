@@ -42,6 +42,12 @@ async def config_setup_db(db: aiosqlite.Connection):
                                                             timewindow INTEGER)""")
     await db.execute("""INSERT OR IGNORE INTO spam(guild_id) VALUES (?)""", (1476359827176423426,))
     await db.execute("""INSERT OR IGNORE INTO spam(guild_id) VALUES (?)""", (1133464786252861633,))
+    await db.execute("""CREATE TABLE IF NOT EXISTS counting(
+                                                            guild_id INTEGER PRIMARY KEY,
+                                                            calculation INTEGER
+                        )""")
+    await db.execute("""INSERT OR IGNORE INTO counting(guild_id, calculation) VALUES (?, ?)""", (1476359827176423426, 0,))
+    await db.execute("""INSERT OR IGNORE INTO counting(guild_id, calculation) VALUES (?, ?)""", (1133464786252861633, 0,))
     await db.commit()
 
 async def get_role_config(db: aiosqlite.Connection, guild_id: int):
@@ -58,4 +64,8 @@ async def get_category_config(db: aiosqlite.Connection, guild_id: int):
 
 async def get_spam_config(db: aiosqlite.Connection, guild_id: int):
     async with db.execute("""SELECT * FROM spam WHERE guild_id = ?""", (guild_id,)) as cursor:
+        return await cursor.fetchone()
+
+async def get_counting_config(db: aiosqlite.Connection, guild_id: int):
+    async with db.execute("""SELECT * FROM counting""", (guild_id,)) as cursor:
         return await cursor.fetchone()
