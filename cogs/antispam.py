@@ -29,7 +29,6 @@ class AntiSpam(commands.Cog):
         team_role = message.guild.get_role(team_role_id)
 
         if team_role is None:
-            print(f"Fehler: Team-Rolle mit der ID {team_role_id} wurde nicht gefunden.")
             return
 
         if team_role in message.author.roles:

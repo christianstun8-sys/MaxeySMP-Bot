@@ -129,6 +129,8 @@ class Leveling(commands.Cog):
     async def send_level_up_message(self, member: discord.Member, new_level: int):
         config = await get_channel_config(self.config_db, member.guild.id)
         levelup_channel_id = config[7]
+        if levelup_channel_id is None:
+            return
         channel = self.bot.get_channel(levelup_channel_id)
         if channel:
             embed = discord.Embed(
@@ -254,6 +256,8 @@ class Leveling(commands.Cog):
     async def leaderboard_command(self, interaction: discord.Interaction):
         config = await get_channel_config(self.config_db, interaction.guild.id)
         supposed_ch_id = config[7]
+        if supposed_ch_id is None:
+            return interaction.response.send_message("❌ Fehler beim Bot. Bitte melde dich beim Support!", ephemeral=True)
         supposed = interaction.guild.get_channel(supposed_ch_id)
 
         if interaction.channel.id != supposed_ch_id and supposed is not None:
@@ -275,6 +279,8 @@ class Leveling(commands.Cog):
     async def rank_command(self, interaction: discord.Interaction, member: discord.Member = None):
         config = await get_channel_config(self.config_db, interaction.guild.id)
         supposed_ch_id = config[7]
+        if supposed_ch_id is None:
+            return interaction.response.send_message("❌ Fehler beim Bot. Bitte melde dich beim Support!", ephemeral=True)
         supposed = interaction.guild.get_channel(supposed_ch_id)
 
         if interaction.channel.id != supposed_ch_id and supposed is not None:
