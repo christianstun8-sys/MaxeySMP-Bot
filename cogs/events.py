@@ -32,6 +32,8 @@ class WelcomeMessages(commands.Cog):
         welcomeembed.set_thumbnail(member.guild.icon.url)
 
         welcomechannel = member.guild.get_channel(config[5])
+        if not welcomechannel:
+            return
         await welcomechannel.send(embed=welcomeembed, content=member.mention)
 
 class JoinRole(commands.Cog):
@@ -45,6 +47,8 @@ class JoinRole(commands.Cog):
 
         config = await get_role_config(self.bot.configdb, member.guild.id)
         member_role = await member.guild.get_role(config[11])
+        if not member_role:
+            return
         try:
             if not member_role in member.roles:
                 await member.add_roles(member_role)
@@ -62,7 +66,8 @@ class Membercounter(commands.Cog):
 
         config = await get_channel_config(self.bot.configdb, member.guild.id)
         member_count_channel = member.guild.get_channel(config[3])
-        await member_count_channel.edit(name=f"👥・Members: {count}")
+        if member_count_channel is not None:
+            await member_count_channel.edit(name=f"👥・Members: {count}")
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
@@ -70,7 +75,8 @@ class Membercounter(commands.Cog):
 
         config = await get_channel_config(self.bot.configdb, member.guild.id)
         member_count_channel = member.guild.get_channel(config[3])
-        await member_count_channel.edit(name=f"👥・Members: {count}")
+        if member_count_channel is not None:
+            await member_count_channel.edit(name=f"👥・Members: {count}")
 
     @commands.Cog.listener()
     async def on_ready(self):
