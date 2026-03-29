@@ -79,7 +79,8 @@ class Membercounter(commands.Cog):
 
         config = await get_channel_config(self.bot.configdb, guild.id)
         member_count_channel = guild.get_channel(config[3])
-        await member_count_channel.edit(name=f"👥・Members: {count}")
+        if member_count_channel is not None:
+            await member_count_channel.edit(name=f"👥・Members: {count}")
 
 
 async def setup(bot):
