@@ -32,6 +32,7 @@ async def config_setup_db(db: aiosqlite.Connection):
                                                                 link_panel_channel_id INTEGER,
                                                                 rule_panel_channel_id INTEGER)
                      """)
+
     await db.execute("""INSERT OR IGNORE INTO channels(guild_id ) VALUES (?)""", (1476359827176423426,))
     await db.execute("""INSERT OR IGNORE INTO channels(guild_id) VALUES (?)""", (1133464786252861633,))
     await db.execute("""CREATE TABLE IF NOT EXISTS categories (

@@ -9,7 +9,7 @@ async def init_db(db: aiosqlite.Connection):
         """CREATE TABLE IF NOT EXISTS counting (
                                                    current_count INTEGER,
                                                    last_member_id INTEGER,
-                                                   server_id INTEGER PRIMARY KEY
+                                                server_id INTEGER PRIMARY KEY
            )"""
     )
     await db.execute(

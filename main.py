@@ -21,7 +21,7 @@ dotenv.load_dotenv()
 
 
 # ----- BETA -----
-beta = True
+beta = False
 # ----------------
 
 if beta:
