@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
-from setup_config_db import get_channel_config, get_role_config
-from discord.utils import get
+from setup_config_db import get_channel_config, get_role_config, get_message_config
 
 class WelcomeMessages(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -16,17 +15,20 @@ class WelcomeMessages(commands.Cog):
         ruleschannel = member.guild.get_channel(1476362373819273366)
         ingamerules = member.guild.get_channel(1482712289176981616)
         tickets = member.guild.get_channel(1479885668908797982)
+
+        messages = await get_message_config(self.bot.configdb, member.guild.id)
+        desc = messages[1] if messages and len(messages) > 1 else None
         welcomeembed = discord.Embed(
             title=f"Willkommen auf dem offiziellen MaxeyTV-SMP Server!",
-            description=f"Hey und schön, dass du da bist!\n"
-                        f"Wir freuen uns riesig, dich in unserer SMP-Community begrüßen zu dürfen. <:MaxeyAxolotlHi:1486035188621508728>\n"
-                        f"Bevor du loslegst, nimm dir bitte kurz Zeit und lies dir unser Server-Regelwerk {ruleschannel.mention} sowie das Ingame-Regelwerk {ingamerules.mention} sorgfältig durch. <:rules:1486035195772665938>\n"
-                        f"Das hilft uns allen, eine faire, entspannte und spaßige Umgebung zu schaffen. <:DiscordSafety:1486035194552127670>\n\n"
+            description=desc if desc else f"Hey und schön, dass du da bist!\n"
+                        f"Wir freuen uns riesig, dich in unserer SMP-Community begrüßen zu dürfen. <:MaxeyAxolotlHi:1491054800643686400>\n"
+                        f"Bevor du loslegst, nimm dir bitte kurz Zeit und lies dir unser Server-Regelwerk {ruleschannel.mention} sowie das Ingame-Regelwerk {ingamerules.mention} sorgfältig durch. <:rules:1491054947767423047>\n"
+                        f"Das hilft uns allen, eine faire, entspannte und spaßige Umgebung zu schaffen. <:DiscordSafety:1491054904754569236>\n\n"
                         f""
-                        f"Wenn du Fragen hast, kannst du dich jederzeit an das Team beim {tickets.mention} wenden – wir helfen dir gerne weiter! <:SupporterOnDuty:1486035192404643870>\n"
+                        f"Wenn du Fragen hast, kannst du dich jederzeit an das Team beim {tickets.mention} wenden – wir helfen dir gerne weiter! <:SupporterOnDuty:1491054878188110015>\n"
                         f"Jetzt wünschen wir dir ganz viel Spaß auf dem Server und eine tolle Zeit mit der Community! \n\n"
                         f""
-                        f"Dein MaxeyTV-SMP Team <:MaxeyAxolotlLovePink:1486035190248767498>!",
+                        f"Dein MaxeyTV-SMP Team <:MaxeyAxolotlLovePink:1491054834940514344>!",
             color=discord.Color.dark_blue()
         )
         welcomeembed.set_thumbnail(member.guild.icon.url)

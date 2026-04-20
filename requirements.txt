@@ -1,6 +1,8 @@
-python-dotenv
+python-dotenv~=1.2.2
 discord.py
-dotenv
+dotenv~=0.9.9
 jishaku
-aiosqlite
-simpleeval
+aiosqlite~=0.22.1
+simpleeval~=1.0.7
+mariadb~=1.1.14
+aiohttp~=3.13.5

@@ -1,4 +1,5 @@
 import aiosqlite
+
 async def config_setup_db(db: aiosqlite.Connection):
     await db.execute("""CREATE TABLE IF NOT EXISTS roles (
                                                              guild_id INTEGER PRIMARY KEY,
@@ -12,7 +13,9 @@ async def config_setup_db(db: aiosqlite.Connection):
                                                              vip_id INTEGER,
                                                              sub_id INTEGER,
                                                              booster_id INTEGER,
-                                                             member_id INTEGER
+                                                             member_id INTEGER,
+                                                             builder_id INTEGER,
+                                                             update_ping_id INTEGER
                         )""")
     await db.execute("""INSERT OR IGNORE INTO roles (guild_id) VALUES (?)""", (1476359827176423426,))
     await db.execute("""INSERT OR IGNORE INTO roles(guild_id) VALUES (?)""", (1133464786252861633,))
@@ -25,7 +28,9 @@ async def config_setup_db(db: aiosqlite.Connection):
                                                                 welcome_channel_id INTEGER,
                                                                 role_panel_channel_id INTEGER,
                                                                 level_up_channel_id INTEGER,
-                                                                counting_channel_id INTEGER)
+                                                                counting_channel_id INTEGER,
+                                                                link_panel_channel_id INTEGER,
+                                                                rule_panel_channel_id INTEGER)
                      """)
     await db.execute("""INSERT OR IGNORE INTO channels(guild_id ) VALUES (?)""", (1476359827176423426,))
     await db.execute("""INSERT OR IGNORE INTO channels(guild_id) VALUES (?)""", (1133464786252861633,))
@@ -48,6 +53,23 @@ async def config_setup_db(db: aiosqlite.Connection):
                         )""")
     await db.execute("""INSERT OR IGNORE INTO counting(guild_id, calculation) VALUES (?, ?)""", (1476359827176423426, 0,))
     await db.execute("""INSERT OR IGNORE INTO counting(guild_id, calculation) VALUES (?, ?)""", (1133464786252861633, 0,))
+    await db.execute("""CREATE TABLE IF NOT EXISTS messages(
+                                                            guild_id INTEGER PRIMARY KEY,
+                                                            welcome_message TEXT,
+                                                            link_mc_message TEXT,
+                                                            ticket_panel_message TEXT
+                        )""")
+    await db.execute("""INSERT OR IGNORE INTO messages(guild_id) VALUES (?)""", (1476359827176423426, ))
+    await db.execute("""INSERT OR IGNORE INTO messages(guild_id) VALUES (?)""", (1133464786252861633, ))
+    await db.execute("""CREATE TABLE IF NOT EXISTS link_mc_db(
+                                                                host TEXT,
+                                                                port INTEGER,
+                                                                db_name TEXT,
+                                                                username TEXT,
+                                                                password TEXT)""")
+    await db.execute("""CREATE TABLE IF NOT EXISTS syncroles_webserver(
+                                                                        url TEXT,
+                                                                        password TEXT)""")
     await db.commit()
 
 async def get_role_config(db: aiosqlite.Connection, guild_id: int):
@@ -67,5 +89,17 @@ async def get_spam_config(db: aiosqlite.Connection, guild_id: int):
         return await cursor.fetchone()
 
 async def get_counting_config(db: aiosqlite.Connection, guild_id: int):
-    async with db.execute("""SELECT * FROM counting""", (guild_id,)) as cursor:
+    async with db.execute("""SELECT * FROM counting WHERE guild_id = ?""", (guild_id,)) as cursor:
+        return await cursor.fetchone()
+
+async def get_message_config(db: aiosqlite.Connection, guild_id: int):
+    async with db.execute("""SELECT * FROM messages WHERE guild_id = ?""", (guild_id,)) as cursor:
+        return await cursor.fetchone()
+
+async def get_link_db_config(db: aiosqlite.Connection):
+    async with db.execute("""SELECT * FROM link_mc_db""") as cursor:
+        return await cursor.fetchone()
+
+async def get_syncroles_webserver_config(db: aiosqlite.Connection):
+    async with db.execute("""SELECT * FROM syncroles_webserver""") as cursor:
         return await cursor.fetchone()

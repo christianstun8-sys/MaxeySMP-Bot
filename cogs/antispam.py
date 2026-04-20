@@ -69,8 +69,8 @@ class AntiSpam(commands.Cog):
                 action = "⚠️ Dem Benutzer wurde eine einmalige Verwarnung erteilt. Bei erneutem Spamming wird er in einen Timeout versetzt."
 
             embed = discord.Embed(
-                title="<:iconmodhqalert:1486035202156400802> Spam erkannt!",
-                description=f"Der User {message.author.mention} hat zu viele Nachrichten auf einmal gesendet!\n\n **<:DiscordSafety:1486035194552127670> Ausgeführte Aktion:**\n{action}",
+                title="<:iconmodhqalert:1491055091715805355> Spam erkannt!",
+                description=f"Der User {message.author.mention} hat zu viele Nachrichten auf einmal gesendet!\n\n **<:DiscordSafety:1491054904754569236> Ausgeführte Aktion:**\n{action}",
                 color=discord.Color.dark_red()
             )
             embed.set_thumbnail(url=message.author.avatar.url)

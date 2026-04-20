@@ -5,7 +5,7 @@ from discord.ext import commands
 import aiosqlite
 import asyncio
 import io
-from setup_config_db import get_role_config, get_channel_config, get_category_config
+from setup_config_db import get_role_config, get_channel_config, get_category_config, get_message_config
 from discord.utils import get
 
 
@@ -362,11 +362,11 @@ class TicketCreateView(discord.ui.View):
         await self.db.commit()
 
         reason_title_mapping = {
-            "support": "<:supporter:1486035205440536818> Allgemeiner Support",
-            "bug": "<:iconmodhqalert:1486035202156400802> Bug-Report",
+            "support": "<:supporter:1491055169998291137> Allgemeiner Support",
+            "bug": "<:iconmodhqalert:1491055091715805355> Bug-Report",
             "teambewerbung": "🗂️ Team-Bewerbungen",
-            "report": "<:report:1486035200591794458> Report-Support",
-            "andere": "<:support_helper:1486035198960341215> Andere Anlässe"
+            "report": "<:report:1491055052750717010> Report-Support",
+            "andere": "<:support_helper:1491055023004848359> Andere Anlässe"
         }
 
         reason_description_mapping = {
@@ -374,11 +374,11 @@ class TicketCreateView(discord.ui.View):
                        "Wir wollen mitteilen, dass Trolling usw. **im schlimmsten Fall** zu einem Ban führen kann! ⚠️ \n\n"
                        "Bitte habe Verständnis, dass die Moderatoren ein wenig Zeit brauchen um zu antworten. Außerdem bitten wir dich das Pingen der Teammitglieder zu unterlassen. \n\n"
                        "Liebe Grüße,\n"
-                       "Dein Maxey-SMP Team <:MaxeyAxolotlLove:1486035197316042964>",
+                       "Dein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
             "bug": "Willkommen im **Bug-Report Ticket**, beschreibe uns dein Bug deine Fehlermeldung o.ä. bitte genaustens! Wir empfehlen immer, Videos, Bilder usw. anzufügen. \n\n"
                    "Wir wollen mitteilen, dass Trolling usw. **im schlimmsten Fall** zu einem Ban führen kann! ⚠️ \n\n"
                    "Bitte habe Verständnis, dass die Moderatoren ein wenig Zeit brauchen um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen. \n\n"
-                   "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1486035197316042964>",
+                   "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
             "teambewerbung": "Willkommen bei den Team-Bewerbungen! Bitte gib uns als ersten Schritt ein paar Eck-Informationen von dir:\n\n"
                              "- Name & Alter\n"
                              "- Welche Position (Discord Mod, Ingame Mod, Dev, usw.)\n"
@@ -386,17 +386,17 @@ class TicketCreateView(discord.ui.View):
                              "- Warum wir genau dich nehmen sollten (Was kannst du, was andere vielleicht nicht haben)\n\n"
                              "Wir wollen mitteilen, dass Trolling usw. im schlimmsten Fall zu einem Ban führen kann! ⚠️ \n\n"
                              "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen.\n"
-                             "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1486035197316042964>",
+                             "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
             "report": "Willkommen im Report-Support! Wenn du einen Spieler Ingame oder eine Person auf diesem Discord Server melden möchtest, beschreibe uns das Problem genaustens!\n"
                       "Wir empfehlen Videos, Bilder usw. immer anzufügen.\n\n"
                       "Wir wollen mitteilen, dass Trolling von dem Ticketersteller und anderen zu einem Ban führen kann! ⚠️ \n\n"
                       "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen.\n\n"
-                      "Liebe Grüße,\n\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1486035197316042964>",
+                      "Liebe Grüße,\n\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
             "andere": "Hallo! Hast du einen ganz anderen Anlass und die anderen Kategorien haben nicht mit deinem Ticketeröffnungsgrund übereingestimmt?\n"
                       "Dann bist du hier genau richtig! Beschreibe uns deinen Anlass bitte genaustens. \n\n"
                       "Wir wollen mitteilen, dass Trolling von dem Ticketersteller usw. zu einem Ban führen kann! ⚠️ \n\n"
                       "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen. \n\n"
-                      "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1486035197316042964>"
+                      "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>"
         }
 
         title=reason_title_mapping[reason]
@@ -514,32 +514,27 @@ async def setup(bot):
     await bot.add_cog(RemoveMember(bot))
 
 async def ticketpanel(bot: commands.Bot, guild, channel: discord.TextChannel = None):
-    support = get(bot.emojis, id=1484254766048477305)
-    mail = get(bot.emojis, id=1484254763846733884)
-    iconmodhqalert = get(bot.emojis, id=1484254761070104577)
-    report = get(bot.emojis, id=1484254758553387048)
-    support_helper = get(bot.emojis, id=1484254756124889188)
-    maxeyaxolotllove = get(bot.emojis, id=1484254754409545780)
-
-    announcements = guild.get_channel(1476366672779808910)
+    db = bot.configdb
+    messages = await get_message_config(db, guild.id)
+    desc = messages[3] if messages and len(messages) > 1 else None
 
     embed = discord.Embed(
-        title=f"<:supporter:1486035205440536818> **Ticket-Support**",
-        description=f"Bitte wähle ein Anliegen aus, um ein Ticket zu erstellen!\n\n"
-                    f"<:mail:1486035203892838481> **Allgemeiner Support:**\n"
-                    f"Bitte öffne dieses Ticket, wenn du allgemeine Anliegen, Fragen oder Anfragen hast!\n\n"
-                    f"<:iconmodhqalert:1486035202156400802>> **Bug-Report:**\n"
-                    f"Bitte öffne dieses Ticket, wenn du einen bestimmten Bug auf dem Discord Server **oder auch** Ingame gefunden hast!\n"
-                    f"Wir bitten darum, den Bug genaustens zu beschreiben und, wenn möglich, Anhänge (zB. Bilder, Videos) als Anhang anzuhängen.\n\n"
-                    f"🗂️ **Team Bewerbungen:**\n"
-                    f"Wenn wir Teammitglieder suchen, wird es von den Server Administratoren in {announcements.mention} angegeben. \n"
-                    f"Öffne **dann erst** dieses Ticket. (Bei Troll o.ä. Bewerbungen könnt ihr mit einem Timeout oder Ban rechnen.)\n\n"
-                    f"<:report:1486035200591794458> **Report Support:**\n"
-                    f"Wenn ihr einen User auf diesem Discord **oder auch** Ingame reporten wollt, öffnet bitte dieses Ticket. Auch hier fordern wir eine genaue Beschreibung des Reports usw.\n\n"
-                    f"<:support_helper:1486035198960341215> **Andere Anlässe:**\n"
-                    f"Denkst du, dein Anliegen, Anlass o.ä. passt **gar nicht** zu den vorhandenen Kategorien? Bitte wähle dann diese Ticketart.\n\n\n"
-                    f""
-                    f"Euer MaxeyTV-SMP Team <:MaxeyAxolotlLove:1486035197316042964>",
+        title="<:supporter:1491055169998291137> **Ticket-Support**",
+        description=desc if desc else "Bitte wähle ein Anliegen aus, um ein Ticket zu erstellen!\n\n"
+                    "<:mail:1491055135554670842> **Allgemeiner Support:**\n"
+                    "Bitte öffne dieses Ticket, wenn du allgemeine Anliegen, Fragen oder Anfragen hast!\n\n"
+                    "<:iconmodhqalert:1491055091715805355> **Bug-Report:**\n"
+                    "Bitte öffne dieses Ticket, wenn du einen bestimmten Bug auf dem Discord Server **oder auch** Ingame gefunden hast!\n"
+                    "Wir bitten darum, den Bug genaustens zu beschreiben und, wenn möglich, Anhänge (zB. Bilder, Videos) als Anhang anzuhängen.\n\n"
+                    "🗂️ **Team Bewerbungen:**\n"
+                    "Wenn wir Teammitglieder suchen, wird es von den Server Administratoren in <#1449828146785288284> angegeben. \n"
+                    "Öffne **dann erst** dieses Ticket. (Bei Troll o.ä. Bewerbungen könnt ihr mit einem Timeout oder Ban rechnen.)\n\n"
+                    "<:report:1491055052750717010> **Report Support:**\n"
+                    "Wenn ihr einen User auf diesem Discord **oder auch** Ingame reporten wollt, öffnet bitte dieses Ticket. Auch hier fordern wir eine genaue Beschreibung des Reports usw.\n\n"
+                    "<:support_helper:1491055023004848359> **Andere Anlässe:**\n"
+                    "Denkst du, dein Anliegen, Anlass o.Ä. passt **gar nicht** zu den vorhandenen Kategorien? Bitte wähle dann diese Ticketart.\n\n\n"
+                    ""
+                    "Euer MaxeyTV-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
         color=discord.Color.dark_red()
     )
     embed.set_thumbnail(url=guild.icon.url)
@@ -547,10 +542,10 @@ async def ticketpanel(bot: commands.Bot, guild, channel: discord.TextChannel = N
         channel_config = await get_channel_config(bot.configdb, guild.id)
         channel_id = channel_config[2]
         channel = guild.get_channel(channel_id)
-        dd_supporter = bot.get_emoji(1484520957908353146)
-        dd_mail = bot.get_emoji(1484521006604484690)
-        dd_supporthelper = bot.get_emoji(1484521071918059701)
-        dd_report = bot.get_emoji(1484521040645324800)
+    dd_supporter = bot.get_emoji(1484520957908353146)
+    dd_mail = bot.get_emoji(1484521006604484690)
+    dd_supporthelper = bot.get_emoji(1484521071918059701)
+    dd_report = bot.get_emoji(1484521040645324800)
     try:
         await channel.send(embed=embed, view=TicketReasonView(dd_supporter, dd_mail, dd_report, dd_supporthelper))
     except discord.Forbidden:

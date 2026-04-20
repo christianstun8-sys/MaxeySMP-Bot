@@ -1,7 +1,9 @@
 import discord
+from discord import Interaction
 from discord.ext import commands
 from cogs.Tickets import ticketpanel
-from setup_config_db import get_spam_config
+from setup_config_db import get_spam_config, get_link_db_config, get_syncroles_webserver_config
+from cogs.link_mc import linkpanel
 
 
 def can_manage_role(bot_member: discord.Member, target_role: discord.Role) -> bool:
@@ -54,17 +56,21 @@ ROLE_MAPPING = {
     "vip_id": "VIP",
     "sub_id": "SUB",
     "booster_id": "Server Booster",
-    "member_id": "Mitglied"
+    "member_id": "Mitglied",
+    "builder_id": "Builder",
+    "rules_update_ping_id": "Regeln Update-Ping"
 }
 
 CHANNEL_MAPPING = {
-    "faq_channel_id": "FAQ Kanal",
+    "faq_channel_id": "FAQ Panel Kanal",
     "ticket_panel_channel_id": "Ticket Panel Kanal",
     "member_counter_channel_id": "Member Counter Anzeige",
     "ticket_logs_channel_id": "Ticket Logs Kanal",
     "welcome_channel_id": "Willkommensnachrichten-Kanal",
     "level_up_channel_id": "Level-Up Kanal",
-    "counting_channel_id": "Counting-Game Kanal"
+    "counting_channel_id": "Counting-Game Kanal",
+    "link_panel_channel_id": "Minecraft Link Panel Kanal",
+    "rule_panel_channel_id": "Regel Panel Kanal"
 }
 
 CATEGORY_MAPPING = {
@@ -72,6 +78,230 @@ CATEGORY_MAPPING = {
     "closed_tickets_cat_id": "Kategorie geschlossene Tickets",
     "claimed_tickets_cat_id": "Kategorie geclaimte Tickets"
 }
+
+MESSAGE_MAPPING = {
+    "welcome_message": "Willkommensnachricht",
+    "link_mc_message": "Minecraft Link Panel-Nachricht",
+    "ticket_panel_message": "Ticket Panel Nachricht",
+    "rules_general": "Generelle Regeln",
+    "rules_casino": "Kasinoregeln",
+    "rules_other": "Andere Verhaltensregeln",
+    "rules_cheating": "Cheatingregeln",
+    "rules_bugs": "Bugregeln",
+    "rules_pvp": "PvP-Regeln",
+    "rules_allowed_mods": "Erlaubte Mods",
+    "rules_forbidden_mods": "Verbotene Mods",
+    "rules_chat": "Chat-Regeln",
+    "rules_vc": "VC-Regeln",
+    "rules_trading": "Handelsregeln",
+    "rules_accounts": "Accountregeln"
+}
+
+class SyncrolesWebserverModal(discord.ui.Modal):
+    def __init__(self, current_config):
+        super().__init__(title="SyncRoles Webserver")
+
+        c_url = current_config[0] if current_config else None
+        c_password = current_config[1] if current_config else None
+
+        self.urlinput = discord.ui.TextInput(
+            label="URL des Webservers mit Port",
+            style=discord.TextStyle.short,
+            placeholder="z.B. http://localhost:8080/syncroles/",
+            default=c_url,
+        )
+        self.add_item(self.urlinput)
+
+        self.pwinput = discord.ui.TextInput(
+            label="Passwort des Webservers",
+            style=discord.TextStyle.long,
+            placeholder="z.B. fe210&d)1%",
+            default=c_password
+        )
+        self.add_item(self.pwinput)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        url_input = self.urlinput.value.strip()
+        pw_input = self.pwinput.value
+
+        if not url_input.startswith("http://") and not url_input.startswith("https://"):
+            return await interaction.response.send_message(f"Deine URL-Eingabe '{url_input}' startet nicht mit `http://` oder `https://`.", ephemeral=True)
+
+        configdb = interaction.client.configdb
+
+        try:
+            async with configdb.execute("SELECT url FROM syncroles_webserver") as cursor:
+                result = await cursor.fetchone()
+
+                if result:
+                    await configdb.execute(
+                        "UPDATE syncroles_webserver SET url = ?, password = ?",
+                        (url_input, pw_input)
+                    )
+                    await configdb.commit()
+                    await interaction.response.send_message("✅ Die Daten wurden erfolgreich gespeichert.", ephemeral=True)
+                else:
+                    await configdb.execute(
+                        "INSERT INTO syncroles_webserver (url, password) VALUES (?, ?)",
+                        (url_input, pw_input,)
+                    )
+
+                    await configdb.commit()
+                    await interaction.response.send_message("✅ Die Daten wurden erfolgreich gespeichert.", ephemeral=True)
+        except Exception as e:
+            print(e)
+            return await interaction.response.send_message(f"❌ Ein unerwarteter Fehler ist aufgetreten. Bitte kontaktiere das Developerteam. Fehler: {e}", ephemeral=True)
+
+
+class SyncRolesModalOpenButton(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+
+    @discord.ui.button(style=discord.ButtonStyle.green, label="Modal öffnen", emoji="↗️")
+    async def callback(self, interaction: discord.Interaction, button):
+        config = await get_syncroles_webserver_config(interaction.client.configdb)
+        await interaction.response.send_modal(SyncrolesWebserverModal(config))
+
+async def send_syncrolemodal_message(ctx: commands.Context):
+    await ctx.reply("🔧 Klicke unten auf den Button, um das Modal zu öffnen und die Webserver-Zugangsdaten für das Minecraft SyncRole Feature anzupassen!", view=SyncRolesModalOpenButton())
+
+class DatabaseModal(discord.ui.Modal):
+    def __init__(self, current_config):
+        super().__init__(title="Datenbank für Minecraft-Link")
+
+        c_host = current_config[0] if current_config else None
+        c_port = current_config[1] if current_config else None
+        c_name = current_config[2] if current_config else None
+        c_user = current_config[3] if current_config else None
+        c_pw   = current_config[4] if current_config else None
+
+        self.hostinput = discord.ui.TextInput(
+            label="Host-IP der DB",
+            style=discord.TextStyle.short,
+            placeholder="z.B. 127.0.0.1",
+            default = c_host
+        )
+        self.portinput = discord.ui.TextInput(
+            label="Port der DB",
+            style=discord.TextStyle.short,
+            placeholder="z.B. 3306",
+            max_length=6,
+            default=c_port
+        )
+        self.nameinput = discord.ui.TextInput(
+            label="Name der DB",
+            style=discord.TextStyle.short,
+            placeholder="z.B. link_mc",
+            default=c_name
+        )
+        self.usernameinput = discord.ui.TextInput(
+            label="Username des DB-Users",
+            style=discord.TextStyle.short,
+            placeholder="z.B. root",
+            default=c_user
+        )
+        self.passwordinput = discord.ui.TextInput(
+            label="Password des DB-Users",
+            style=discord.TextStyle.short,
+            placeholder="z.B. MeinTollesPasswort12345!",
+            default=c_pw
+        )
+        self.add_item(self.hostinput)
+        self.add_item(self.portinput)
+        self.add_item(self.nameinput)
+        self.add_item(self.usernameinput)
+        self.add_item(self.passwordinput)
+
+    async def on_submit(self, interaction: Interaction):
+        db = interaction.client.configdb
+
+        host = self.hostinput.value
+        port = int(self.portinput.value)
+        name = self.nameinput.value
+        username = self.usernameinput.value
+        password = self.passwordinput.value
+
+        try:
+            async with db.execute("SELECT 1 FROM link_mc_db") as cursor:
+                result = await cursor.fetchone()
+
+            if result:
+                await db.execute(
+                    "UPDATE link_mc_db SET host = ?, port = ?, db_name = ?, username = ?, password = ?",
+                    (host, port, name, username, password)
+                )
+            else:
+                await db.execute(
+                    "INSERT INTO link_mc_db (host, port, db_name, username, password) VALUES (?, ?, ?, ?, ?)",
+                    (host, port, name, username, password)
+                )
+
+            await db.commit()
+            await interaction.response.send_message("✅ Die Daten wurden erfolgreich gespeichert.", ephemeral=True)
+        except Exception as e:
+            return await interaction.response.send_message(f"❌ Ein unerwarteter Fehler ist aufgetreten. Bitte kontaktiere das Developerteam. Fehler: {e}", ephemeral=True)
+
+
+class DBModalOpenButton(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+
+    @discord.ui.button(style=discord.ButtonStyle.green, label="Modal öffnen", emoji="↗️")
+    async def callback(self, interaction: discord.Interaction, button):
+        config = await get_link_db_config(interaction.client.configdb)
+        await interaction.response.send_modal(DatabaseModal(config))
+
+async def send_dbmodal_message(ctx: commands.Context):
+    await ctx.reply("🔧 Klicke unten auf den Button, um das Modal zu öffnen und die Datenbank-Zugangsdaten für das Minecraft Link Feature anzupassen!", view=DBModalOpenButton())
+
+class MessageModal(discord.ui.Modal):
+    def __init__(self, db_coloumn, display_name):
+        self.db_column = db_coloumn
+        self.display_name = display_name
+        super().__init__(title="Nachricht anpassen")
+
+        self.messageinput = discord.ui.TextInput(
+            label=f"Embednachricht",
+            style=discord.TextStyle.paragraph,
+            placeholder="Hier Nachricht eingeben, leer lassen für Standard",
+            max_length=1000,
+            required=False
+        )
+        self.add_item(self.messageinput)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        db = interaction.client.configdb
+        message_value = self.messageinput.value
+
+        query = f"UPDATE messages SET {self.db_column} = ? WHERE guild_id = ?"
+        await db.execute(query, (message_value, interaction.guild.id))
+        await db.commit()
+        await interaction.response.send_message(f"✅ Die Nachricht für **{self.display_name}** wurde erfolgreich aktualisiert!", ephemeral= True)
+
+class MessageTypeSelect(discord.ui.Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label=name, value=key)
+            for key, name in MESSAGE_MAPPING.items()
+        ]
+        super().__init__(placeholder="Was möchtest du konfigurieren?", options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        column = self.values[0]
+        display_name = next(name for key, name in MESSAGE_MAPPING.items() if key == column)
+
+        await interaction.response.send_modal(MessageModal(column, display_name))
+
+async def send_message_config_ui(ctx: commands.Context):
+    embed = discord.Embed(
+        title="⚙️ Nachrichten-Konfiguration",
+        description="Wähle im untenstehenden Menü die Nachricht aus, die du für den Bot definieren möchtest.",
+        color=discord.Color.blue()
+    )
+    view = discord.ui.View()
+    view.add_item(MessageTypeSelect())
+    await ctx.send(embed=embed, view=view)
+
 
 class RolePicker(discord.ui.RoleSelect):
     def __init__(self, db_column, display_name):
@@ -165,6 +395,9 @@ class ChannelPicker(discord.ui.ChannelSelect):
 
         if self.display_name == "Ticket Panel Kanal":
             await ticketpanel(interaction.client, interaction.guild, channel)
+
+        if self.display_name == "Minecraft Link Panel Kanal":
+            await linkpanel(interaction.client, interaction.guild, channel)
 
 class ChannelTypeSelect(discord.ui.Select):
     def __init__(self):

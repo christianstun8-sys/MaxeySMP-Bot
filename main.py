@@ -5,8 +5,11 @@ import os
 import aiosqlite
 import roleselection
 from setup_warn_db import warn_setup_db
-
+import mariadb
+from setup_link_db import init_tables, init_linkmc_db
 import setup_config_db
+
+# Markenzeichen höhö bin krass :)
 print(r'_________ .__          .__          __  .__                        __      ')
 print(r'\_   ___ \|  |_________|__| _______/  |_|__|____    ____   _______/  |_    ')
 print(r'/    \  \/|  |  \_  __ \  |/  ___/\   __\  \__  \  /    \ /  ___/\   __\   ')
@@ -16,8 +19,9 @@ print(r'        \/     \/              \/               \/     \/     \/    /___
 
 dotenv.load_dotenv()
 
+
 # ----- BETA -----
-beta = False
+beta = True
 # ----------------
 
 if beta:
@@ -45,16 +49,55 @@ class MaxeySMPBot(commands.Bot):
         self.level_db = None
         self.warns_db = None
         self.counting_db = None
+        self.mariadb = None
+        self.linking_db = None
 
     async def setup_hook(self):
         self.configdb = await aiosqlite.connect("databases/config.db")
+        await setup_config_db.config_setup_db(self.configdb)
+        self.mdb_config_tuple = await setup_config_db.get_link_db_config(self.configdb)
+
+        if self.mdb_config_tuple is not None:
+            self.mdb_config = {
+                'host': str(self.mdb_config_tuple[0]),
+                'user': str(self.mdb_config_tuple[3]),
+                'password': str(self.mdb_config_tuple[4])
+            }
+
+            self.mdb_config_db = {
+                'host': str(self.mdb_config_tuple[0]),
+                'port': int(self.mdb_config_tuple[1]),
+                'user': str(self.mdb_config_tuple[3]),
+                'password': str(self.mdb_config_tuple[4]),
+                'database': str(self.mdb_config_tuple[2])
+            }
+        else:
+            self.mdb_config = None
+            self.mdb_config_db = None
+
         self.ticketdb = await aiosqlite.connect("databases/tickets.db")
         self.roleconfig = await aiosqlite.connect("databases/roleconfig.db")
         self.level_db = await aiosqlite.connect("databases/levels.db")
         self.warns_db = await aiosqlite.connect("databases/warns.db")
         self.counting_db = await aiosqlite.connect("databases/counting.db")
+
+        await warn_setup_db(self.warns_db)
+
+        await roleselection.setup_rolepanel(self)
+
+        if self.mdb_config_tuple is not None:
+            try:
+                self.mariadb = mariadb.connect(**self.mdb_config)
+                self.linking_db = mariadb.connect(**self.mdb_config_db)
+                self.linking_db.autocommit = True
+                print(f"✅ Erfolgreich mit MariaDB-Host {self.mdb_config_db['host']} verbunden.")
+                await init_tables(self.linking_db)
+            except mariadb.OperationalError:
+                pass
+
         done = True
         print("Starte Cogs-Ladevorgang...")
+
         for filename in os.listdir("cogs"):
             if filename.endswith(".py"):
                 try:
@@ -85,9 +128,11 @@ class MaxeySMPBot(commands.Bot):
             synced = await self.tree.sync()
             print(f"[BETA] Erfolgreich {len(synced)} Slash-Befehle synchronisiert")
 
-        await setup_config_db.config_setup_db(self.configdb)
-        await warn_setup_db(self.warns_db)
-        await roleselection.setup_rolepanel(self)
+        if self.mariadb is not None and self.linking_db is not None:
+            try:
+                await init_linkmc_db(self.mariadb)
+            except mariadb.OperationalError:
+                pass
 
     async def on_ready(self):
         print("------------------------------")
