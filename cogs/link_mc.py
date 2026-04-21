@@ -1,4 +1,4 @@
-import mariadb
+import mysql.connector as mariadb
 import discord
 from discord import Interaction
 from discord.ext import commands

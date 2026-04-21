@@ -1,4 +1,4 @@
-import mariadb
+import mysql.connector as mariadb
 
 async def init_linkmc_db(conn: mariadb.Connection):
     cur = conn.cursor()
