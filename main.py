@@ -5,7 +5,7 @@ import os
 import aiosqlite
 import roleselection
 from setup_warn_db import warn_setup_db
-import mariadb
+import mysql.connector
 from setup_link_db import init_tables, init_linkmc_db
 import setup_config_db
 
@@ -87,12 +87,12 @@ class MaxeySMPBot(commands.Bot):
 
         if self.mdb_config_tuple is not None:
             try:
-                self.mariadb = mariadb.connect(**self.mdb_config)
-                self.linking_db = mariadb.connect(**self.mdb_config_db)
+                self.mariadb = mysql.connector.connect(**self.mdb_config)
+                self.linking_db = mysql.connector.connect(**self.mdb_config_db)
                 self.linking_db.autocommit = True
                 print(f"✅ Erfolgreich mit MariaDB-Host {self.mdb_config_db['host']} verbunden.")
                 await init_tables(self.linking_db)
-            except mariadb.OperationalError:
+            except mysql.connector.OperationalError:
                 pass
 
         done = True
@@ -131,7 +131,7 @@ class MaxeySMPBot(commands.Bot):
         if self.mariadb is not None and self.linking_db is not None:
             try:
                 await init_linkmc_db(self.mariadb)
-            except mariadb.OperationalError:
+            except mysql.connector.OperationalError:
                 pass
 
     async def on_ready(self):
