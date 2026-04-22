@@ -73,7 +73,8 @@ CHANNEL_MAPPING = {
     "level_up_channel_id": "Level-Up Kanal",
     "counting_channel_id": "Counting-Game Kanal",
     "link_panel_channel_id": "Minecraft Link Panel Kanal",
-    "rule_panel_channel_id": "Regel Panel Kanal"
+    "rule_panel_channel_id": "Regel Panel Kanal",
+    "role_panel_channel_id": "Rollen Panel Kanal"
 }
 
 CATEGORY_MAPPING = {
