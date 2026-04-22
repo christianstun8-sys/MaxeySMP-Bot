@@ -38,12 +38,16 @@ class RolepanelLayout(ui.LayoutView):
 
     async def button_callback(self, interaction: discord.Interaction):
         custom_id = interaction.data['custom_id']
-        config = await get_role_config(interaction.client.configdb, interaction.guild.id)
-        role_ids ={
-            "ping_status": config[16],
-            "ping_changelog": config[15],
-            "ping_announces": config[14],
-            "ping_rulechanges": config[13]
+        async with interaction.client.configdb.execute("SELECT * FROM roles WHERE guild_id = ?", (interaction.guild.id,)) as cursor:
+            row = await cursor.fetchone()
+            columns = [col[0] for col in cursor.description]
+            config_dict = dict(zip(columns, row))
+
+        role_ids = {
+            "ping_status": config_dict.get("status_ping_id"),
+            "ping_changelog": config_dict.get("changelog_ping_id"),
+            "ping_announces": config_dict.get("announces_ping_id"),
+            "ping_rulechanges": config_dict.get("rules_update_ping_id")
         }
 
         role_id = role_ids.get(custom_id)
