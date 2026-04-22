@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime, timedelta
-import aiosqlite
-import asyncio
 from pathlib import Path
 from setup_config_db import get_channel_config
 
