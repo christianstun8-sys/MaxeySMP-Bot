@@ -75,7 +75,7 @@ class TicketReasonSelect(discord.ui.Select):
 class TicketReasonView(discord.ui.View):
     def __init__(self, supporter: discord.Emoji, mail: discord.Emoji, report: discord.Emoji, support_helper: discord.Emoji):
         super().__init__(timeout=None)
-        self.add_item(TicketReasonSelect(supporter, mail, report, support_helper))
+        self.add_item(TicketReasonSelect())
 
 class ConfirmDeleteView(discord.ui.View):
     def __init__(self, db: aiosqlite.Connection):
