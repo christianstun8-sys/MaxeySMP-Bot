@@ -38,7 +38,7 @@ class RolepanelLayout(ui.LayoutView):
 
     async def button_callback(self, interaction: discord.Interaction):
         custom_id = interaction.data['custom_id']
-        config = await get_role_config(interaction.client.configdb, interaction.client.id)
+        config = await get_role_config(interaction.client.configdb, interaction.guild.id)
         role_ids ={
             "ping_status": config[16],
             "ping_changelog": config[15],
