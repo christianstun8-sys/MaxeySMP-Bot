@@ -47,9 +47,11 @@ class RolepanelLayout(ui.LayoutView):
         }
 
         role_id = role_ids.get(custom_id)
-        role = interaction.guild.get_role(role_id) or await interaction.guild.fetch_role(role_id)
-        if role is None:
+
+        if role_id is None:
             return await interaction.response.send_message("❌ Es wurde bisher keine Rolle konfiguriert. Melde dich bitte beim Team.", ephemeral=True)
+
+        role = interaction.guild.get_role(role_id) or await interaction.guild.fetch_role(role_id)
 
         if role in interaction.user.roles:
             await interaction.user.remove_roles(role)
