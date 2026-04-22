@@ -64,7 +64,7 @@ async def config_setup_db(db: aiosqlite.Connection):
                                                                 level_up_channel_id INTEGER,
                                                                 counting_channel_id INTEGER,
                                                                 link_panel_channel_id INTEGER,
-                                                                rule_panel_channel_id INTEGER,)
+                                                                rule_panel_channel_id INTEGER)
                      """)
 
     channels_columns = [
