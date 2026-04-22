@@ -395,7 +395,7 @@ class TicketCreateView(discord.ui.View):
                       "Wir wollen mitteilen, dass Trolling von dem Ticketersteller und anderen zu einem Ban führen kann! ⚠️ \n\n"
                       "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen.\n\n"
                       "Liebe Grüße,\n\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
-            "adminticket": "Hallo! Hast du ein spezielles Anliegen, mit dem du dich an die Administation wenden willst? Dann bist du hier genau richtig!\n\n"
+            "adminticket": "Hallo! Hast du ein spezielles Anliegen, mit dem du dich an die Administration wenden willst? Dann bist du hier genau richtig!\n\n"
                       "Bitte beschreibe uns deinen Grund für die Ticketeröffnung so genau wie möglich.\n\n"
                       "**Wichtige Hinweise:**\n- ⚠️ **Trolling:** Jeglicher Missbrauch des Support-Systems oder Trolling kann zu einem direkten Bann führen!\n"
                       "- ⏳ **Geduld:** Bitte habe Verständnis dafür, dass die **Administration** etwas Zeit für eine Antwort benötigt.\n"
