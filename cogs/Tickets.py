@@ -69,8 +69,11 @@ class TicketReasonSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         selected = self.values[0]
+        messages = await get_message_config(interaction.client.configdb, interaction.guild.id)
+        desc = messages[3]
         view = TicketCreateView(interaction.client.ticketdb)
         await view.create_ticket_callback(interaction, selected)
+        await interaction.edit_original_response(view=TicketLayout(desc))
 
 class TicketReasonView(discord.ui.View):
     def __init__(self):
