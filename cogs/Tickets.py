@@ -379,14 +379,14 @@ class TicketCreateView(discord.ui.View):
                    "Wir wollen mitteilen, dass Trolling usw. **im schlimmsten Fall** zu einem Ban führen kann! ⚠️ \n\n"
                    "Bitte habe Verständnis, dass die Moderatoren ein wenig Zeit brauchen um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen. \n\n"
                    "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
-            "mediabewerbung": "Willkommen bei den Team-Bewerbungen! Bitte gib uns als ersten Schritt ein paar Eck-Informationen von dir:\n\n"
-                             "- Name & Alter\n"
-                             "- Welche Position (Discord Mod, Ingame Mod, Dev, usw.)\n"
-                             "- Deine Erfahrung und wo du sie gesammelt hast\n"
-                             "- Warum wir genau dich nehmen sollten (Was kannst du, was andere vielleicht nicht haben)\n\n"
-                             "Wir wollen mitteilen, dass Trolling usw. im schlimmsten Fall zu einem Ban führen kann! ⚠️ \n\n"
-                             "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen.\n"
-                             "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
+            "mediabewerbung": "Hallo! Du möchtest unseren Server als Creator unterstützen? Wir freuen uns über dein Interesse am **Media-Rang**!\n\n"
+                              "Damit das Team deine Bewerbung prüfen kann, sende uns bitte folgende Informationen:\n\n"
+                              "- **Deine Kanäle:** Bitte verlinke deine Haupt-Plattformen (YouTube, Twitch, TikTok, Instagram etc.).\n"
+                              "- **Content-Beispiel:** Sende uns einen direkten Link zu einem deiner Videos oder Streams (z.B. ein YT-Short, ein TikTok oder ein Highlight-Clip), damit wir einen Eindruck von deinem Content bekommen.\n"
+                              "- **Statistiken:** Ein Einblick in deine Reichweite oder deine Streaming-Zeiten.\n\n"
+                              "**Wichtige Hinweise:**\n⚠️ Das Betteln um den Rang oder das Pingen des Teams führt zur Ablehnung.\n"
+                              "⏳ Die Überprüfung deines Kanals kann einige Zeit in Anspruch nehmen. Wir melden uns bei dir!\n\n"
+                              "Viel Erfolg bei deiner Bewerbung!\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
             "report": "Willkommen im Report-Support! Wenn du einen Spieler Ingame oder eine Person auf diesem Discord Server melden möchtest, beschreibe uns das Problem genaustens!\n"
                       "Wir empfehlen Videos, Bilder usw. immer anzufügen.\n\n"
                       "Wir wollen mitteilen, dass Trolling von dem Ticketersteller und anderen zu einem Ban führen kann! ⚠️ \n\n"
