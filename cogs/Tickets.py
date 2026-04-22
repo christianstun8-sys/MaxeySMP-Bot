@@ -73,7 +73,7 @@ class TicketReasonSelect(discord.ui.Select):
         await view.create_ticket_callback(interaction, selected)
 
 class TicketReasonView(discord.ui.View):
-    def __init__(self, supporter: discord.Emoji, mail: discord.Emoji, report: discord.Emoji, support_helper: discord.Emoji):
+    def __init__(self):
         super().__init__(timeout=None)
         self.add_item(TicketReasonSelect())
 
@@ -427,17 +427,13 @@ class TicketCog(commands.Cog):
         self.db = bot.ticketdb
 
     async def cog_load(self):
-        dd_supporter = self.bot.get_emoji(1484520957908353146)
-        dd_mail = self.bot.get_emoji(1484521006604484690)
-        dd_supporthelper = self.bot.get_emoji(1484521071918059701)
-        dd_report = self.bot.get_emoji(1484521040645324800)
         await self.init_db()
         self.bot.add_view(TicketCreateView(self.db))
         self.bot.add_view(OpenTicketView(self.db))
         self.bot.add_view(ClosedTicketView(self.db))
         self.bot.add_view(ConfirmDeleteView(self.db))
         self.bot.add_view(TicketClaimView(self.db))
-        self.bot.add_view(TicketReasonView(dd_supporter, dd_mail, dd_report, dd_supporthelper))
+        self.bot.add_view(TicketLayout())
 
     async def init_db(self):
         await self.db.execute(
