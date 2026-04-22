@@ -140,7 +140,7 @@ class Leveling(commands.Cog):
             )
             embed.set_thumbnail(url=member.display_avatar.url)
             try:
-                await channel.send(embed=embed)
+                await channel.send(embed=embed, content=member.mention)
             except:
                 pass
 
