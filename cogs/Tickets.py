@@ -63,7 +63,7 @@ class TicketReasonSelect(discord.ui.Select):
             discord.SelectOption(label=f"Bug-Report", description="Fehler melden", value="bug", emoji="<:iconmodhqalert:1491055091715805355>"),
             discord.SelectOption(label=f"Media Bewerbung", description="Bewerbung für den Media-Rang", value="mediabewerbung", emoji="🗂️"),
             discord.SelectOption(label=f"Spieler Melden", description="Jemanden melden", value="report",emoji="<:report:1491055052750717010>"),
-            discord.SelectOption(label=f"Admin Tickets", description="Sonstiges", value="andere", emoji="<:support_helper:1491055023004848359>"),
+            discord.SelectOption(label=f"Admin Tickets", description="Sonstiges", value="adminticket", emoji="<:support_helper:1491055023004848359>"),
         ]
         super().__init__(placeholder="Wähle den Grund für dein Ticket...", min_values=1, max_values=1, options=options, custom_id="reason_dropdown")
 
@@ -202,7 +202,7 @@ class OpenTicketView(discord.ui.View):
             "bug": [config[5], config[1], config[2]],
             "mediabewerbung": [config[3]],
             "report": [config[1], config[2]],
-            "andere": [config[2]]
+            "adminticket": [config[2]]
         }
 
         allowed_roles = role_mapping.get(reason, [])
@@ -331,7 +331,7 @@ class TicketCreateView(discord.ui.View):
             "bug": [role_config[5], role_config[1], role_config[2]],
             "mediabewerbung": [role_config[3]],
             "report": [role_config[1], role_config[2]],
-            "andere": [role_config[5], role_config[1], role_config[2]]
+            "adminticket": [role_config[2]]
         }
 
         allowed_roles = role_mapping.get(reason, [])
@@ -366,7 +366,7 @@ class TicketCreateView(discord.ui.View):
             "bug": "<:iconmodhqalert:1491055091715805355> Bug-Report",
             "mediabewerbung": "🗂️ Media-Bewerbungen",
             "report": "<:report:1491055052750717010> Report-Support",
-            "andere": "<:support_helper:1491055023004848359> Andere Anlässe"
+            "adminticket": "<:support_helper:1491055023004848359> Admin Ticket"
         }
 
         reason_description_mapping = {
@@ -392,10 +392,11 @@ class TicketCreateView(discord.ui.View):
                       "Wir wollen mitteilen, dass Trolling von dem Ticketersteller und anderen zu einem Ban führen kann! ⚠️ \n\n"
                       "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen.\n\n"
                       "Liebe Grüße,\n\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
-            "andere": "Hallo! Hast du einen ganz anderen Anlass und die anderen Kategorien haben nicht mit deinem Ticketeröffnungsgrund übereingestimmt?\n"
-                      "Dann bist du hier genau richtig! Beschreibe uns deinen Anlass bitte genaustens. \n\n"
-                      "Wir wollen mitteilen, dass Trolling von dem Ticketersteller usw. zu einem Ban führen kann! ⚠️ \n\n"
-                      "Bitte habe Verständnis, dass die Teamleitung ein wenig Zeit braucht um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen. \n\n"
+            "adminticket": "Hallo! Hast du ein spezielles Anliegen, mit dem du dich an die Administation wenden willst? Dann bist du hier genau richtig!\n\n"
+                      "Bitte beschreibe uns deinen Grund für die Ticketeröffnung so genau wie möglich.\n\n"
+                      "**Wichtige Hinweise:**\n- ⚠️ **Trolling:** Jeglicher Missbrauch des Support-Systems oder Trolling kann zu einem direkten Bann führen!\n"
+                      "- ⏳ **Geduld:** Bitte habe Verständnis dafür, dass die **Administration** etwas Zeit für eine Antwort benötigt.\n"
+                      "- 🚫 **Pings:** Wir bitten dich höflich, das Pingen von Teammitgliedern oder der Administration zu unterlassen.\n\n"
                       "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>"
         }
 
