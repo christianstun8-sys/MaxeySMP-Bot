@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from setup_config_db import get_channel_config, get_role_config, get_message_config
 
 class WelcomeMessages(commands.Cog):
@@ -82,6 +82,16 @@ class Membercounter(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        guild = self.bot.get_guild(1476359827176423426)
+        count = sum(1 for member in guild.members if not member.bot)
+
+        config = await get_channel_config(self.bot.configdb, guild.id)
+        member_count_channel = guild.get_channel(config[3])
+        if member_count_channel is not None:
+            await member_count_channel.edit(name=f"👥・Members: {count}")
+
+    @tasks.loop(minutes=1)
+    async def member_count(self):
         guild = self.bot.get_guild(1476359827176423426)
         count = sum(1 for member in guild.members if not member.bot)
 
