@@ -48,6 +48,8 @@ class JoinRole(commands.Cog):
             return
 
         config = await get_role_config(self.bot.configdb, member.guild.id)
+        if config[11] is None:
+            return
         member_role = await member.guild.get_role(config[11])
         if not member_role:
             return
