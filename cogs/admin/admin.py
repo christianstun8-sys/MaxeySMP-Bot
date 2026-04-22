@@ -2,11 +2,10 @@ from discord.ext import commands
 from cogs.admin.config import send_role_config_ui, send_channel_config_ui, send_category_config_ui, send_modal_spam_button, send_message_config_ui, send_dbmodal_message, send_syncrolemodal_message
 from cogs.Tickets import ticketpanel
 from cogs.link_mc import linkpanel
-from roleselection import rolepanel_send, rolepanel_addrole, rolepanel_create, rolepanel_removerole, rolepanel_edit
 from cogs.rulepanel import send_rule_panel
 from cogs.admin.sync import sync
+from cogs.roleselection import send_rule_panel
 from cogs.faqpanel import send_faq_panel
-import discord
 
 class Admin(commands.Cog):
     def __init__(self, bot):
@@ -91,58 +90,10 @@ class Admin(commands.Cog):
         await send_rule_panel(ctx.bot, ctx.guild)
         await ctx.reply("✅ Rule-Panel wurde erfolgreich in den konfigurierten Kanal gesendet. Falls keine Nachricht gesendet wurde, wurde noch kein Kanal konfiguriert.")
 
-    @admin_group.group(name="roleselection", invoke_without_command=True)
+    @resend_group.command(name="role-panel")
     @commands.has_permissions(administrator=True)
-    async def roleselection_group(self, ctx):
-        await ctx.send("🪛 Befehle: `create <Panelname> <Paneltyp (buttons/dropdown)>, role_add <Panelname> <@Role>, role_remove <Panelname> <@Role>, edit <Panelname>, send <Panelname>`")
-
-    @roleselection_group.command(name="create")
-    @commands.has_permissions(administrator=True)
-    async def rolepanel_create(self, ctx: commands.Context, panel: str, typ: str):
-        if panel is None or typ is None:
-            await ctx.reply("❌ Die Felder `<Panelname>` und `<Paneltyp (buttons/dropdown)>` müssen ausgefüllt sein.")
-            return
-
-        await rolepanel_create(ctx, panel, typ)
-
-    @roleselection_group.command(name="role_add")
-    @commands.has_permissions(administrator=True)
-    async def role_add(self, ctx: commands.Context, panel: str, role: discord.Role):
-        if panel is None or role is None:
-            await ctx.reply("❌ Die Felder `<Panelname>` und `<@Role>` müssen ausgefüllt sein.")
-            return
-
-        if not isinstance(role, discord.Role):
-            await ctx.reply("❌ Das Feld `<@Role>` ist keine Rollenerwähnung.")
-            return
-
-        await rolepanel_addrole(ctx, panel, role)
-
-    @roleselection_group.command(name="role_remove")
-    @commands.has_permissions(administrator=True)
-    async def rolepanel_remove(self, ctx: commands.Context, panel: str, role: discord.Role):
-        if panel is None or role is None:
-            await ctx.reply("❌ Die Felder `<Panelname>` und `<@Role>` müssen ausgefüllt sein.")
-            return
-        if not isinstance(role, discord.Role):
-            await ctx.reply("❌ Das Feld `<@Role>` ist keine Rollenerwähnung.")
-            return
-
-        await rolepanel_removerole(ctx, panel, role)
-
-    @roleselection_group.command(name="send")
-    @commands.has_permissions(administrator=True)
-    async def rolepanel_send(self, ctx: commands.Context, panel: str):
-        if panel is None:
-            await ctx.reply("❌ Das Feld `<Panelname>` muss ausgefüllt sein.")
-            return
-
-        await rolepanel_send(ctx, panel)
-
-    @roleselection_group.command(name="edit")
-    @commands.has_permissions(administrator=True)
-    async def rolepanel_edit(self, ctx: commands.Context, panel: str):
-        await rolepanel_edit(ctx, panel)
+    async def resend_role_panel(self, ctx: commands.Context):
+        await send_rule_panel(ctx.bot, ctx.guild)
 
     @admin_group.command(name="sync")
     @commands.has_permissions(administrator=True)

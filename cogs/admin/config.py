@@ -58,7 +58,10 @@ ROLE_MAPPING = {
     "booster_id": "Server Booster",
     "member_id": "Mitglied",
     "builder_id": "Builder",
-    "rules_update_ping_id": "Regeln Update-Ping"
+    "rules_update_ping_id": "Regeln Update-Ping",
+    "announces_ping_id": "Ankündigungen-Ping",
+    "changelog_ping_id":"Changelog Ping",
+    "status_ping_id": "Status Ping"
 }
 
 CHANNEL_MAPPING = {

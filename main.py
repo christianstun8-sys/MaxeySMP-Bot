@@ -3,7 +3,7 @@ from discord.ext import commands
 import dotenv
 import os
 import aiosqlite
-import roleselection
+from cogs import roleselection
 from setup_warn_db import warn_setup_db
 import mysql.connector
 from setup_link_db import init_tables, init_linkmc_db
@@ -82,8 +82,6 @@ class MaxeySMPBot(commands.Bot):
         self.counting_db = await aiosqlite.connect("databases/counting.db")
 
         await warn_setup_db(self.warns_db)
-
-        await roleselection.setup_rolepanel(self)
 
         if self.mdb_config_tuple is not None:
             try:
