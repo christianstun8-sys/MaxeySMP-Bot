@@ -202,7 +202,7 @@ class OpenTicketView(discord.ui.View):
             "bug": [config[5], config[1], config[2]],
             "mediabewerbung": [config[3]],
             "report": [config[1], config[2]],
-            "andere": [config[5], config[1], config[2]]
+            "andere": [config[2]]
         }
 
         allowed_roles = role_mapping.get(reason, [])
