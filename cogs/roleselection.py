@@ -73,7 +73,7 @@ class RolePanelCog(commands.Cog):
 async def send_rule_panel(bot: commands.Bot, guild: discord.Guild, channel: discord.TextChannel = None):
     if channel is None:
         config = await get_channel_config(bot.configdb, guild.id)
-        channel_id = config[10]
+        channel_id = config[6]
         channel = bot.get_channel(channel_id) or await bot.fetch_channel(channel_id)
 
     try:
