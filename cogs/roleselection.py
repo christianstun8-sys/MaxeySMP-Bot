@@ -80,3 +80,6 @@ async def send_rule_panel(bot: commands.Bot, guild: discord.Guild, channel: disc
         await channel.send(view=RolepanelLayout())
     except discord.Forbidden:
         pass
+
+async def setup(bot: commands.Bot):
+    await bot.add_cog(RolePanelCog(bot))
