@@ -20,7 +20,7 @@ class Admin(commands.Cog):
     @admin_group.group(name="config", invoke_without_command=True)
     @commands.has_permissions(administrator=True)
     async def config_group(self, ctx):
-        await ctx.send("🪛 Befehle: `roles, channels, categories, antispam`")
+        await ctx.send("🪛 Befehle: `roles, channels, categories, antispam, messages, servers`")
 
     @config_group.command(name="roles")
     @commands.has_permissions(administrator=True)
