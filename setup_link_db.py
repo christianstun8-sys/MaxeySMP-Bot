@@ -1,11 +1,12 @@
 import mysql.connector as mariadb
+from mysql.connector.abstracts import MySQLConnectionAbstract as Connection
 
-async def init_linkmc_db(conn: mariadb.Connection):
+async def init_linkmc_db(conn: Connection):
     cur = conn.cursor()
     cur.execute("""CREATE DATABASE IF NOT EXISTS link_mc;""")
     conn.commit()
 
-async def init_tables(db: mariadb.Connection):
+async def init_tables(db: Connection):
     cur = db.cursor()
     cur.execute("""CREATE TABLE IF NOT EXISTS codes(
                                                             code INTEGER PRIMARY KEY,
@@ -21,7 +22,7 @@ async def init_tables(db: mariadb.Connection):
                         DELETE FROM codes WHERE created_at < NOW() - INTERVAL 5 MINUTE""")
     db.commit()
 
-async def get_linking(conn: mariadb.Connection, uuid: str = None, discord_id: int = None):
+async def get_linking(conn: Connection, uuid: str = None, discord_id: int = None):
     if not discord_id and not uuid:
         return None
 

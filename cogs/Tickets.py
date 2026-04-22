@@ -57,13 +57,13 @@ async def move_ticket_category(bot: commands.Bot, channel: discord.TextChannel, 
             await channel.edit(category=category)
 
 class TicketReasonSelect(discord.ui.Select):
-    def __init__(self, supporter: discord.Emoji, mail: discord.Emoji, report: discord.Emoji, support_helper: discord.Emoji):
+    def __init__(self):
         options = [
-            discord.SelectOption(label=f"Allgemeiner Support", description="Supportanliegen", value="support", emoji=supporter),
-            discord.SelectOption(label=f"Bug-Report", description="Fehler melden", value="bug", emoji=mail),
-            discord.SelectOption(label=f"Teambewerbungen", description="Bewerbung für's Team", value="teambewerbung", emoji="🗂️"),
-            discord.SelectOption(label=f"Report Support", description="Jemanden melden", value="report",emoji=report),
-            discord.SelectOption(label=f"Andere Anlässe", description="Sonstiges", value="andere", emoji=support_helper),
+            discord.SelectOption(label=f"Allgemeiner Support", description="Allgemeines Anliegen", value="support", emoji="<:supporter:1491055169998291137>"),
+            discord.SelectOption(label=f"Bug-Report", description="Fehler melden", value="bug", emoji="<:iconmodhqalert:1491055091715805355>"),
+            discord.SelectOption(label=f"Media Bewerbung", description="Bewerbung für den Media-Rang", value="mediabewerbung", emoji="🗂️"),
+            discord.SelectOption(label=f"Spieler Melden", description="Jemanden melden", value="report",emoji="<:report:1491055052750717010>"),
+            discord.SelectOption(label=f"Admin Tickets", description="Sonstiges", value="andere", emoji="<:support_helper:1491055023004848359>"),
         ]
         super().__init__(placeholder="Wähle den Grund für dein Ticket...", min_values=1, max_values=1, options=options, custom_id="reason_dropdown")
 
@@ -200,7 +200,7 @@ class OpenTicketView(discord.ui.View):
         role_mapping = {
             "support": [config[1], config[2]],
             "bug": [config[5], config[1], config[2]],
-            "teambewerbung": [config[3]],
+            "mediabewerbung": [config[3]],
             "report": [config[1], config[2]],
             "andere": [config[5], config[1], config[2]]
         }
@@ -329,7 +329,7 @@ class TicketCreateView(discord.ui.View):
         role_mapping = {
             "support": [role_config[1], role_config[2]],
             "bug": [role_config[5], role_config[1], role_config[2]],
-            "teambewerbung": [role_config[3]],
+            "mediabewerbung": [role_config[3]],
             "report": [role_config[1], role_config[2]],
             "andere": [role_config[5], role_config[1], role_config[2]]
         }
@@ -364,7 +364,7 @@ class TicketCreateView(discord.ui.View):
         reason_title_mapping = {
             "support": "<:supporter:1491055169998291137> Allgemeiner Support",
             "bug": "<:iconmodhqalert:1491055091715805355> Bug-Report",
-            "teambewerbung": "🗂️ Team-Bewerbungen",
+            "mediabewerbung": "🗂️ Media-Bewerbungen",
             "report": "<:report:1491055052750717010> Report-Support",
             "andere": "<:support_helper:1491055023004848359> Andere Anlässe"
         }
@@ -379,7 +379,7 @@ class TicketCreateView(discord.ui.View):
                    "Wir wollen mitteilen, dass Trolling usw. **im schlimmsten Fall** zu einem Ban führen kann! ⚠️ \n\n"
                    "Bitte habe Verständnis, dass die Moderatoren ein wenig Zeit brauchen um zu antworten. Außerdem bitten wir dich, das Pingen der Teammitglieder zu unterlassen. \n\n"
                    "Liebe Grüße,\nDein Maxey-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
-            "teambewerbung": "Willkommen bei den Team-Bewerbungen! Bitte gib uns als ersten Schritt ein paar Eck-Informationen von dir:\n\n"
+            "mediabewerbung": "Willkommen bei den Team-Bewerbungen! Bitte gib uns als ersten Schritt ein paar Eck-Informationen von dir:\n\n"
                              "- Name & Alter\n"
                              "- Welche Position (Discord Mod, Ingame Mod, Dev, usw.)\n"
                              "- Deine Erfahrung und wo du sie gesammelt hast\n"
@@ -513,40 +513,54 @@ async def setup(bot):
     await bot.add_cog(AddMember(bot))
     await bot.add_cog(RemoveMember(bot))
 
+class TicketLayout(discord.ui.LayoutView):
+    def __init__(self, desc: str = None):
+        super().__init__(timeout=None)
+
+        container = discord.ui.Container()
+
+        img = discord.ui.MediaGallery()
+        img.add_item(media="https://i.ibb.co/ZRtdZPhm/TICKETS.png")
+        container.add_item(img)
+        container.add_item(discord.ui.Separator())
+
+        title = discord.ui.TextDisplay("## <:supporter:1491055169998291137> Ticket-Support")
+        container.add_item(title)
+        container.add_item(discord.ui.Separator())
+
+        desc = discord.ui.TextDisplay(desc if desc else "Bitte wähle ein Anliegen aus, um ein Ticket zu erstellen!\n\n"
+                                                        "<:mail:1491055135554670842> **Allgemeiner Support:**\n"
+                                                        "Bitte öffne dieses Ticket, wenn du allgemeine Anliegen, Fragen oder Anfragen hast!\n\n"
+                                                        "<:iconmodhqalert:1491055091715805355> **Bug-Report:**\n"
+                                                        "Bitte öffne dieses Ticket, wenn du einen bestimmten Bug auf dem Discord Server **oder auch** Ingame gefunden hast!\n"
+                                                        "Wir bitten darum, den Bug genaustens zu beschreiben und, wenn möglich, Anhänge (zB. Bilder, Videos) als Anhang anzuhängen.\n\n"
+                                                        "🗂️ **Media Bewerbung:**\n"
+                                                        "Um den Media-Rang zu erhalten, muss mindestens eine der folgenden Anforderungen erfüllt sein: \n"
+                                                        "- Mindestens 20 durchschnittliche Zuschauer im Stream\n"
+                                                        "- Mindestens 80 durchschnittliche Zuschauer bei TikTok-Streams\n"
+                                                        "- Mindestens 3.000 Aufrufe auf einem YouTube-Video\n"
+                                                        "- Mindestens 50.000 Aufrufe auf TikTok, YouTube Shorts oder Instagram Reels\n"
+                                                        "Hast du diese Aufrufe erreicht? Öffne ein Ticket, um deinen Rang zu erhalten!\n\n"
+                                                        "<:report:1491055052750717010> **Spieler Report:**\n"
+                                                        "Wenn ihr einen User auf diesem Ingame oder auch auf diesem Discord reporten wollt, öffnet bitte dieses Ticket. \n\n"
+                                                        "<:support_helper:1491055023004848359> **Admin Ticket:**\n"
+                                                        "Hier kannst du dich bei uns melden, wenn du ein Anliegen hast, das direkt das Admin-Team betrifft. Dazu gehören z.B. spezielle Anfragen, Probleme, Mod Abuse, Beschwerden oder andere wichtige Themen, die nicht in andere Ticket-Kategorien passen.\n\n\n"
+                                                        "Euer MaxeyTV-SMP Team <:MaxeyAxolotlLove:1491054981602611321>")
+        container.add_item(desc)
+        container.add_item(discord.ui.Separator())
+        row = discord.ui.ActionRow()
+        row.add_item(TicketReasonSelect())
+    
 async def ticketpanel(bot: commands.Bot, guild, channel: discord.TextChannel = None):
     db = bot.configdb
     messages = await get_message_config(db, guild.id)
     desc = messages[3] if messages and len(messages) > 1 else None
 
-    embed = discord.Embed(
-        title="<:supporter:1491055169998291137> **Ticket-Support**",
-        description=desc if desc else "Bitte wähle ein Anliegen aus, um ein Ticket zu erstellen!\n\n"
-                    "<:mail:1491055135554670842> **Allgemeiner Support:**\n"
-                    "Bitte öffne dieses Ticket, wenn du allgemeine Anliegen, Fragen oder Anfragen hast!\n\n"
-                    "<:iconmodhqalert:1491055091715805355> **Bug-Report:**\n"
-                    "Bitte öffne dieses Ticket, wenn du einen bestimmten Bug auf dem Discord Server **oder auch** Ingame gefunden hast!\n"
-                    "Wir bitten darum, den Bug genaustens zu beschreiben und, wenn möglich, Anhänge (zB. Bilder, Videos) als Anhang anzuhängen.\n\n"
-                    "🗂️ **Team Bewerbungen:**\n"
-                    "Wenn wir Teammitglieder suchen, wird es von den Server Administratoren in <#1449828146785288284> angegeben. \n"
-                    "Öffne **dann erst** dieses Ticket. (Bei Troll o.ä. Bewerbungen könnt ihr mit einem Timeout oder Ban rechnen.)\n\n"
-                    "<:report:1491055052750717010> **Report Support:**\n"
-                    "Wenn ihr einen User auf diesem Discord **oder auch** Ingame reporten wollt, öffnet bitte dieses Ticket. Auch hier fordern wir eine genaue Beschreibung des Reports usw.\n\n"
-                    "<:support_helper:1491055023004848359> **Andere Anlässe:**\n"
-                    "Denkst du, dein Anliegen, Anlass o.Ä. passt **gar nicht** zu den vorhandenen Kategorien? Bitte wähle dann diese Ticketart.\n\n\n"
-                    ""
-                    "Euer MaxeyTV-SMP Team <:MaxeyAxolotlLove:1491054981602611321>",
-        color=discord.Color.dark_red()
-    )
-    embed.set_thumbnail(url=guild.icon.url)
     if channel is None:
         channel_config = await get_channel_config(bot.configdb, guild.id)
         channel_id = channel_config[2]
         channel = guild.get_channel(channel_id)
-    dd_supporter = bot.get_emoji(1484520957908353146)
-    dd_mail = bot.get_emoji(1484521006604484690)
-    dd_supporthelper = bot.get_emoji(1484521071918059701)
-    dd_report = bot.get_emoji(1484521040645324800)
     try:
-        await channel.send(embed=embed, view=TicketReasonView(dd_supporter, dd_mail, dd_report, dd_supporthelper))
+        await channel.send(view=TicketLayout(desc))
     except discord.Forbidden:
         pass

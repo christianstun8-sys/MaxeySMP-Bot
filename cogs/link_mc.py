@@ -4,10 +4,11 @@ from discord import Interaction
 from discord.ext import commands
 import aiohttp
 from setup_config_db import get_channel_config, get_message_config
+from mysql.connector.abstracts import MySQLConnectionAbstract as Connection
 
 
 class AlreadyConnectedView(discord.ui.View):
-    def __init__(self, linking_db: mariadb.Connection):
+    def __init__(self, linking_db: Connection):
         super().__init__()
         self.linking_db = linking_db
 

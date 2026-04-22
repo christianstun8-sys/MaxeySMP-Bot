@@ -313,11 +313,16 @@ class RolePicker(discord.ui.RoleSelect):
         role = self.values[0]
         db = interaction.client.configdb
 
-        if not can_manage_role(interaction.guild.me, role):
-            return await interaction.response.send_message(
-                f"❌ Ich kann {role.mention} nicht verwalten. Prüfe meine Position in der Rollenliste!",
-                ephemeral=True
-            )
+        ignore_perms = [
+            "sub_id",
+            "booster_id"
+        ]
+        if self.db_column not in ignore_perms:
+            if not can_manage_role(interaction.guild.me, role):
+                return await interaction.response.send_message(
+                    f"❌ Ich kann {role.mention} nicht verwalten. Prüfe meine Position in der Rollenliste!",
+                    ephemeral=True
+                )
 
         query = f"UPDATE roles SET {self.db_column} = ? WHERE guild_id = ?"
         await db.execute(query, (role.id, interaction.guild.id))
@@ -370,11 +375,16 @@ class ChannelPicker(discord.ui.ChannelSelect):
 
         channel_id = int(self.values[0].id)
         channel = interaction.guild.get_channel(channel_id)
-        if not isinstance(channel, discord.TextChannel):
-            return await interaction.response.send_message(
-                "❌ Bitte wähle einen Textkanal aus!",
-                ephemeral=True
-            )
+
+        req_voice_channels = [
+            "member_counter_channel_id"
+        ]
+        if self.db_column not in req_voice_channels:
+            if not isinstance(channel, discord.TextChannel):
+                return await interaction.response.send_message(
+                    "❌ Bitte wähle einen Textkanal aus!",
+                    ephemeral=True
+                )
 
         db = interaction.client.configdb
 

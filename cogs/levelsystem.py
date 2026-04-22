@@ -254,15 +254,6 @@ class Leveling(commands.Cog):
 
     @discord.app_commands.command(name="leaderboard", description="Zeigt die Leveling-Bestenliste an.")
     async def leaderboard_command(self, interaction: discord.Interaction):
-        config = await get_channel_config(self.config_db, interaction.guild.id)
-        supposed_ch_id = config[7]
-        if supposed_ch_id is None:
-            return interaction.response.send_message("❌ Fehler beim Bot. Bitte melde dich beim Support!", ephemeral=True)
-        supposed = interaction.guild.get_channel(supposed_ch_id)
-
-        if interaction.channel.id != supposed_ch_id and supposed is not None:
-            return await interaction.response.send_message(f"❌ Du darfst hier diesen Befehl nicht ausführen. Bitte sende den Befehl noch einmal in dem Kanal {supposed.mention}.", ephemeral=True)
-
         await interaction.response.defer()
         async with self.db.execute("SELECT COUNT(*) FROM levels WHERE guild_id = ?", (interaction.guild_id,)) as cursor:
             total = (await cursor.fetchone())[0]
@@ -277,14 +268,6 @@ class Leveling(commands.Cog):
 
     @discord.app_commands.command(name="rank", description="Zeigt deinen Level-Fortschritt an.")
     async def rank_command(self, interaction: discord.Interaction, member: discord.Member = None):
-        config = await get_channel_config(self.config_db, interaction.guild.id)
-        supposed_ch_id = config[7]
-        if supposed_ch_id is None:
-            return interaction.response.send_message("❌ Fehler beim Bot. Bitte melde dich beim Support!", ephemeral=True)
-        supposed = interaction.guild.get_channel(supposed_ch_id)
-
-        if interaction.channel.id != supposed_ch_id and supposed is not None:
-            return await interaction.response.send_message(f"❌ Du darfst hier diesen Befehl nicht ausführen. Bitte sende den Befehl noch einmal in dem Kanal {supposed.mention}.", ephemeral=True)
         if member is not None:
             if member.bot:
                 return await interaction.response.send_message(f"❌ Der Benutzer {member.mention} ist ein Bot und kann keine XP verdienen.", ephemeral=True)
