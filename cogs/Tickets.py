@@ -550,6 +550,9 @@ class TicketLayout(discord.ui.LayoutView):
         container.add_item(discord.ui.Separator())
         row = discord.ui.ActionRow()
         row.add_item(TicketReasonSelect())
+        container.add_item(row)
+
+        self.add_item(container)
     
 async def ticketpanel(bot: commands.Bot, guild, channel: discord.TextChannel = None):
     db = bot.configdb
