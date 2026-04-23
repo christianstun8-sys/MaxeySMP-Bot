@@ -30,7 +30,7 @@ faq_answers = {
     "q11":"Als Media erhältst du kostenlos alle Features der Sub-Rolle und wirst in der Tabliste zusätzlich weiter oben angezeigt.",
     "q12":"Verbinde deinen Discord-Account mit deinem Twitch-Account, über den du subbst. \nDanach musst du nur noch hier deinen Minecraft-Account verknüpfen: https://discord.com/channels/1476359827176423426/1489947203744043198.\nAnschließend erhältst du automatisch deine Sub-Rolle ingame.",
     "q13":"Eröffne ein Ticket im Discord und sende dort deinen Kanal ein: https://discord.com/channels/1476359827176423426/1479885668908797982. \n"
-          "Um den Media-Rang zu erhalten, muss mindestens eine der folgenden Anforderungen erfüllt sein:\n\n- Mindestens 20 durchschnittliche Zuschauer im Stream\n- Mindestens 80 durchschnittliche Zuschauer bei TikTok-Streams\n- Mindestens 3.000 Aufrufe auf einem YouTube-Video\n- Mindestens 50.000 Aufrufe auf TikTok, YouTube Shorts oder Instagram Reels\n\n Hast du diese Aufrufe erreicht? Öffne ein Ticket, um deinen Rang zu erhalten!"
+          "Um den Media-Rang zu erhalten, brauchst du mindestens 10 durchschnittliche Zuschauer pro Stream oder eine aktive Community sowie unterhaltsamen Content."
 }
 
 class FAQSelect(ui.Select):
