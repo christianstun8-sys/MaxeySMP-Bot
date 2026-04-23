@@ -268,7 +268,7 @@ class MessageModal(discord.ui.Modal):
             label=f"Embednachricht",
             style=discord.TextStyle.paragraph,
             placeholder="Hier Nachricht eingeben, leer lassen für Standard",
-            max_length=1000,
+            max_length=4096,
             required=False
         )
         self.add_item(self.messageinput)
