@@ -5,7 +5,7 @@ import os
 import aiosqlite
 from cogs import roleselection
 from setup_warn_db import warn_setup_db
-import mysql.connector
+import logging
 from setup_link_db import init_tables, init_linkmc_db
 import setup_config_db
 
@@ -18,6 +18,8 @@ print(r' \______  /___|  /__|  |__/____  > |__| |__(____  /___|  /____  > |__|__
 print(r'        \/     \/              \/               \/     \/     \/    /_____/')
 
 dotenv.load_dotenv()
+logger = logging.getLogger("discord.gateway")
+logger.setLevel(logging.WARNING)
 
 
 # ----- BETA -----
