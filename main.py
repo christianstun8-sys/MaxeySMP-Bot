@@ -3,7 +3,7 @@ from discord.ext import commands
 import dotenv
 import os
 import aiosqlite
-from cogs import roleselection
+import mysql.connector
 from setup_warn_db import warn_setup_db
 import logging
 from setup_link_db import init_tables, init_linkmc_db
