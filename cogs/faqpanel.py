@@ -20,7 +20,7 @@ faq_questions = {
 
 faq_answers = {
     "q1":"MaxeySMP ist ein Survival-Multiplayer-Server mit Auktionshaus, Orders und vielen weiteren SMP-üblichen Features. Unser Ziel ist es, den SMP so zu gestalten, dass er auch für Nicht-PvP-Spieler angenehm ist. Du kannst dort entspannt bauen, ohne Angst vor Griefing haben zu müssen.",
-    "q2":"Der Release von MaxeySMP ist am Freitag, den 24. April 2026 (<t:1777024800:R>).",
+    "q2":"Der Release von MaxeySMP ist am Freitag, den 24. Mai 2026 (<t:1779616800:R>).",
     "q3":"Es gibt keine Whitelist. Wie viele Spieler gleichzeitig online sein können, hängt von den verfügbaren Serverressourcen ab. Wir sorgen aber dafür, dass möglichst viele gleichzeitig spielen können.",
     "q4":"Zum Start läuft MaxeySMP auf Version 1.21.11. Du kannst aber auch mit Versionen von 1.21.1 bis 1.21.11 joinen.",
     "q5": "Simple Voice Chat wird unterstützt, die Nutzung ist jedoch komplett freiwillig.",
