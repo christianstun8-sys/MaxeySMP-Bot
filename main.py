@@ -89,14 +89,14 @@ class MaxeySMPBot(commands.Bot):
             try:
                 self.mariadb = mysql.connector.connect(**self.mdb_config)
                 print('MariaDB-Connection erfolgreich verbunden!')
-            except mysql.connector.ProgrammingError:
+            except mysql.connector.errors.ProgrammingError:
                 print('MariaDB-Connection wurde nicht gefunden. Bitte überprüfe die Eingaben in m!admin config servers link-mc-db.')
 
             if self.mariadb:
                 try:
                     self.linking_db = mysql.connector.connect(**self.mdb_config_db)
                     print("MariaDB-Datenbank für Minecraft-Link-Feature erfolgreich verbunden")
-                except mysql.connector.OperationalError:
+                except mysql.connector.errors.ProgrammingError:
                     print(f'MariaDB-Connection wurde gefunden, aber die Datenbank {self.mdb_config_db["database"]} konnte nicht gefunden werden. Bitte über den Befehl m!admin config servers link-mc-db in Discord überprüfen.')
 
         done = True
