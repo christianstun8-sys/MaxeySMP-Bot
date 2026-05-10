@@ -91,11 +91,11 @@ class OpenCodeModalButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         db = interaction.client.linking_db
         if db is None:
-            return await interaction.response.send_message(f"❌ Fehler: Es wurde bisher keine Datenbank konfiguriert. Bitte melde dich beim Team.", ephemeral=True)
+            return await interaction.response.send_message(content="❌ Es gab einen unerwarteten Fehler. Bitte kontaktiere den Support.", ephemeral=True)
         db.commit()
         cursor = db.cursor()
         if cursor is None:
-            return await interaction.response.send_message(f"❌ Fehler: Es wurde bisher keine Datenbank konfiguriert. Bitte melde dich beim Team.", ephemeral=True)
+            return await interaction.response.send_message(content="❌ Es gab einen unerwarteten Fehler. Bitte kontaktiere den Support.", ephemeral=True)
         cursor.execute("""SELECT minecraft_id FROM links WHERE discord_id = %s""", (interaction.user.id,))
         uuid = cursor.fetchone()
         cursor.close()
