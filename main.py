@@ -134,7 +134,7 @@ class MaxeySMPBot(commands.Bot):
 
         if self.mariadb is not None and self.linking_db is not None:
             try:
-                await init_linkmc_db(self.mariadb)
+                await init_tables(self.linking_db)
             except mysql.connector.OperationalError:
                 pass
 
