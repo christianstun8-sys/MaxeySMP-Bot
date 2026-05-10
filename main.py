@@ -88,16 +88,16 @@ class MaxeySMPBot(commands.Bot):
         if self.mdb_config_tuple is not None:
             try:
                 self.mariadb = mysql.connector.connect(**self.mdb_config)
-                print('MariaDB-Connection erfolgreich verbunden!')
+                print('[MariaDB INFO]: MariaDB-Connection erfolgreich verbunden!')
             except mysql.connector.errors.ProgrammingError:
-                print('MariaDB-Connection wurde nicht gefunden. Bitte überprüfe die Eingaben in m!admin config servers link-mc-db.')
+                print('[MariaDB ALERT]: MariaDB-Connection wurde nicht gefunden. Bitte überprüfe die Eingaben in m!admin config servers link-mc-db.')
 
             if self.mariadb:
                 try:
                     self.linking_db = mysql.connector.connect(**self.mdb_config_db)
-                    print("MariaDB-Datenbank für Minecraft-Link-Feature erfolgreich verbunden")
+                    print("[MariaDB INFO]: MariaDB-Datenbank für Minecraft-Link-Feature erfolgreich verbunden")
                 except mysql.connector.errors.ProgrammingError:
-                    print(f'MariaDB-Connection wurde gefunden, aber die Datenbank {self.mdb_config_db["database"]} konnte nicht gefunden werden. Bitte über den Befehl m!admin config servers link-mc-db in Discord überprüfen.')
+                    print(f'[MariaDB ALERT]: MariaDB-Connection wurde gefunden, aber die Datenbank {self.mdb_config_db["database"]} konnte nicht gefunden werden. Bitte über den Befehl m!admin config servers link-mc-db in Discord überprüfen.')
 
         done = True
         print("Starte Cogs-Ladevorgang...")
